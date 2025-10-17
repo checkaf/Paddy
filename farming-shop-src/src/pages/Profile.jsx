@@ -35,6 +35,7 @@ export default function Profile() {
     return (
         <div className="max-w-md mx-auto bg-white border rounded p-4 space-y-3">
             <h2 className="text-xl font-semibold">Profile</h2>
+            <h2 className="text-xl font-semibold">Profile</h2>
             <form onSubmit={onSave} className="space-y-3">
                 <input className="w-full border rounded px-3 py-2" placeholder="Display Name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
                 <select className="w-full border rounded px-3 py-2" value={location} onChange={(e) => setLocation(e.target.value)}>
