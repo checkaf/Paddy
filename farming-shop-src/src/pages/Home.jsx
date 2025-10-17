@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useEffect, useMemo, useState } from 'react';
-import { listProducts } from '../utils/db.js';
+import { listProducts, placeOrder } from '../utils/db.js';
 import ProductCard from '../components/ProductCard.jsx';
 
 export default function Home() {
@@ -45,6 +45,13 @@ export default function Home() {
     }
 
     if (role === 'buyer') {
+        const onOrder = async (product) => {
+            const qtyStr = globalThis?.prompt?.('Enter quantity to order:', '1');
+            const qty = Number(qtyStr || '0');
+            if (Number.isNaN(qty) || qty <= 0) return;
+            await placeOrder({ product, qty });
+            alert('Order placed');
+        };
         return (
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
                 <aside className="md:col-span-1 space-y-3">
@@ -68,14 +75,14 @@ export default function Home() {
                     </select>
                 </aside>
                 <main className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filtered.map(p => <ProductCard key={p.id} product={p} />)}
+                    {filtered.map(p => <ProductCard key={p.id} product={p} onOrder={onOrder} />)}
                     {!filtered.length && <div className="text-sm text-gray-500">No products found.</div>}
                 </main>
             </div>
         );
     }
 
-    // Farmer landing can be simple link to dashboard
+    // Farmers should not see Home content; redirect to dashboard
     return (
         <div className="max-w-5xl mx-auto py-8">
             <Link to="/dashboard/farmer" className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700">Go to Dashboard</Link>
