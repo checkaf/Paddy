@@ -34,7 +34,7 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route
-                path="/dashboard/farmer"
+                path="/home/farmer"
                 element={
                   <ProtectedRoute roles={["farmer"]}>
                     <FarmerDashboard />

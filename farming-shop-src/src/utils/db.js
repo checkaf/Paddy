@@ -39,12 +39,18 @@ export async function listOrdersForUser(uid) {
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-export async function placeOrder({ productId, qty }) {
+export async function placeOrder({ product, qty }) {
     const user = auth.currentUser;
     return await addDoc(collection(db, 'orders'), {
-        productId,
+        productId: product.id,
+        productName: product.name,
+        category: product.category || '',
+        unitPrice: typeof product.price === 'number' ? product.price : null,
+        location: product.location || '',
         qty,
+        totalPrice: typeof product.price === 'number' ? product.price * qty : null,
         userUid: user?.uid || null,
+        farmerUid: product.ownerUid || null,
         status: 'Pending',
         createdAt: Date.now(),
     });
@@ -52,6 +58,10 @@ export async function placeOrder({ productId, qty }) {
 
 export async function updateOrderStatus(id, status) {
     await updateDoc(doc(db, 'orders', id), { status });
+}
+
+export async function cancelOrder(id) {
+    await deleteDoc(doc(db, 'orders', id));
 }
 
 // Reviews
