@@ -48,21 +48,28 @@ export default function FarmerDashboard() {
         await refresh();
     };
 
+    const OnSubmit = async () => {};
+
     return (
         <div className="max-w-5xl mx-auto space-y-6">
             <h2 className="text-2xl font-semibold">Farmer Dashboard</h2>
             <form onSubmit={onAddProduct} className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white border rounded-lg p-4">
                 <input className="border rounded px-3 py-2" placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+
                 <input className="border rounded px-3 py-2" placeholder="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
+
                 <input className="border rounded px-3 py-2" placeholder="Image URL" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
+
                 <input className="border rounded px-3 py-2" placeholder="Quantity" type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
+
                 <select className="border rounded px-3 py-2" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })}>
                     <option value="">Select Location</option>
                     <option value="Village A">Village A</option>
                     <option value="Town B">Town B</option>
                 </select>
+
                 <div className="flex items-center gap-2">
-                    <button className="bg-green-600 text-white rounded px-4 py-2">Add Product</button>
+                    <button className="bg-green-600 text-white rounded px-4 py-2" onClick={OnSubmit}>Add Product</button>
                     {aiPrice && <span className="text-sm text-green-700">AI suggested: LKR {aiPrice}</span>}
                 </div>
             </form>
