@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { auth } from '../firebase/config.js';
-import { listOrdersForUser, updateOrderStatus } from '../utils/db.js';
+import { listOrdersForUser, updateOrderStatus, cancelOrder, getProduct } from '../utils/db.js';
 
 export default function OrderManagement() {
     const [orders, setOrders] = useState([]);
@@ -11,11 +11,9 @@ export default function OrderManagement() {
         }
     }, []);
 
-    const cycle = (status) => (status === 'Pending' ? 'Shipped' : status === 'Shipped' ? 'Delivered' : 'Pending');
-    const updateStatusLocal = async (id) => {
-        const next = cycle(orders.find(o => o.id === id)?.status || 'Pending');
-        await updateOrderStatus(id, next);
-        setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: next } : o)));
+    const onCancel = async (id) => {
+        await cancelOrder(id);
+        setOrders(prev => prev.filter(o => o.id !== id));
     };
 
     return (
@@ -23,17 +21,28 @@ export default function OrderManagement() {
             <h2 className="text-2xl font-semibold mb-4">Orders</h2>
             <div className="space-y-3">
                 {orders.map((o) => (
-                    <div key={o.id} className="border rounded p-4 bg-white flex items-center justify-between">
-                        <div>
-                            <div className="font-medium">{o.product}</div>
-                            <div className="text-sm text-gray-600">Quantity: {o.qty}</div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <span className="text-sm px-2 py-1 rounded border">{o.status}</span>
-                            <button className="text-sm bg-gray-800 text-white px-3 py-1 rounded" onClick={() => updateStatusLocal(o.id)}>Update</button>
+                    <div key={o.id} className="border rounded p-4 bg-white">
+                        <div className="flex items-start justify-between gap-4">
+                            <div className="space-y-1">
+                                <div className="font-medium">{o.productName}</div>
+                                <div className="text-sm text-gray-600">Category: {o.category}</div>
+                                <div className="text-sm text-gray-600">Location: {o.location}</div>
+                                <div className="text-sm text-gray-600">Quantity: {o.qty}</div>
+                                {o.unitPrice != null && (
+                                    <div className="text-sm text-gray-600">Unit Price: LKR {o.unitPrice}</div>
+                                )}
+                                {o.totalPrice != null && (
+                                    <div className="text-sm text-gray-800 font-medium">Total: LKR {o.totalPrice}</div>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <span className="text-sm px-2 py-1 rounded border">{o.status}</span>
+                                <button className="text-sm bg-red-600 text-white px-3 py-1 rounded" onClick={() => onCancel(o.id)}>Cancel</button>
+                            </div>
                         </div>
                     </div>
                 ))}
+                {!orders.length && <div className="text-sm text-gray-500">No orders yet.</div>}
             </div>
         </div>
     );

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { auth } from '../firebase/config.js';
 
 export default function Login() {
-    const { login, role } = useAuth();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -14,8 +15,9 @@ export default function Login() {
         setError('');
         try {
             await login(email, password);
-            if (role === 'farmer') navigate('/dashboard/farmer');
-            else if (role === 'buyer') navigate('/dashboard/buyer');
+            const r = auth.currentUser?.photoURL;
+            if (r === 'farmer') navigate('/home/farmer');
+            else if (r === 'buyer') navigate('/home/buyer');
             else navigate('/');
         } catch (e) {
             setError(e.message || 'Login failed');
