@@ -29,10 +29,14 @@ export default function ProductDetails() {
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             <div className="space-y-2 bg-white border rounded p-4">
+                {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={product.name} className="w-full h-60 object-cover rounded" />
+                ) : null}
                 <h2 className="text-2xl font-semibold">{product.name}</h2>
                 <p>Category: {product.category}</p>
+                {product.location && <p>Location: {product.location}</p>}
                 <p>Quantity: {product.quantity}</p>
-                <p>Price: LKR {product.price}</p>
+                {typeof product.price === 'number' && <p>Price: LKR {product.price}</p>}
                 {product.aiPrice ? <p>AI Price: LKR {product.aiPrice}</p> : null}
             </div>
 

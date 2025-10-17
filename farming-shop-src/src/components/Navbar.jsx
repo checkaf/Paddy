@@ -15,13 +15,10 @@ export default function Navbar() {
                     {user && role === 'farmer' && (
                         <NavLink to="/dashboard/farmer" className="text-sm text-gray-700 hover:text-green-700">{t.dashboard}</NavLink>
                     )}
-                    {user && role === 'buyer' && (
-                        <NavLink to="/dashboard/buyer" className="text-sm text-gray-700 hover:text-green-700">{t.dashboard}</NavLink>
-                    )}
                     {user && (
                         <NavLink to="/orders" className="text-sm text-gray-700 hover:text-green-700">{t.orders}</NavLink>
                     )}
-                    <NavLink to="/products" className="text-sm text-gray-700 hover:text-green-700">Products</NavLink>
+                    {user && <NavLink to="/profile" className="text-sm text-gray-700 hover:text-green-700">Profile</NavLink>}
                     <LanguageSwitcher />
                     {!user ? (
                         <div className="flex items-center gap-2">

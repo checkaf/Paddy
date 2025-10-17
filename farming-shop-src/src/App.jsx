@@ -6,12 +6,13 @@ import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import FarmerDashboard from './pages/FarmerDashboard.jsx';
-import BuyerDashboard from './pages/BuyerDashboard.jsx';
+// BuyerDashboard removed: buyer flow moved to Home
 import ProductListing from './pages/ProductListing.jsx';
 import ProductDetails from './pages/ProductDetails.jsx';
 import OrderManagement from './pages/OrderManagement.jsx';
 import Reviews from './pages/Reviews.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Profile from './pages/Profile.jsx';
 
 function ProtectedRoute({ children, roles }) {
   const { user, role, loading } = useAuth();
@@ -40,15 +41,8 @@ export default function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/dashboard/buyer"
-                element={
-                  <ProtectedRoute roles={["buyer"]}>
-                    <BuyerDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/products" element={<ProductListing />} />
+              <Route path="/profile" element={<ProtectedRoute roles={["buyer", "farmer"]}><Profile /></ProtectedRoute>} />
+              <Route path="/products" element={<ProtectedRoute roles={["buyer", "farmer"]}><ProductListing /></ProtectedRoute>} />
               <Route path="/products/:id" element={<ProductDetails />} />
               <Route
                 path="/orders"

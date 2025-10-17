@@ -6,7 +6,7 @@ import { auth } from '../firebase/config.js';
 
 export default function FarmerDashboard() {
     const [products, setProducts] = useState([]);
-    const [form, setForm] = useState({ name: '', category: '', imageUrl: '', quantity: 0, price: 0 });
+    const [form, setForm] = useState({ name: '', category: '', imageUrl: '', quantity: 0, location: '' });
     const [aiPrice, setAiPrice] = useState(null);
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export default function FarmerDashboard() {
             const all = await listProducts();
             const uid = auth.currentUser?.uid;
             const mine = uid ? all.filter(p => p.ownerUid === uid) : all;
-            setProducts(mine);
+            setProducts(mine.slice(0, 6));
         })();
     }, []);
 
@@ -32,13 +32,13 @@ export default function FarmerDashboard() {
         const all = await listProducts();
         const uid = auth.currentUser?.uid;
         const mine = uid ? all.filter(p => p.ownerUid === uid) : all;
-        setProducts(mine);
+        setProducts(mine.slice(0, 6));
     };
 
     const onAddProduct = async (e) => {
         e.preventDefault();
-        await addProduct({ ...form, quantity: Number(form.quantity), price: Number(form.price), aiPrice });
-        setForm({ name: '', category: '', imageUrl: '', quantity: 0, price: 0 });
+        await addProduct({ ...form, quantity: Number(form.quantity), aiPrice });
+        setForm({ name: '', category: '', imageUrl: '', quantity: 0, location: '' });
         setAiPrice(null);
         await refresh();
     };
@@ -56,7 +56,11 @@ export default function FarmerDashboard() {
                 <input className="border rounded px-3 py-2" placeholder="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
                 <input className="border rounded px-3 py-2" placeholder="Image URL" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
                 <input className="border rounded px-3 py-2" placeholder="Quantity" type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
-                <input className="border rounded px-3 py-2" placeholder="Price (LKR)" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+                <select className="border rounded px-3 py-2" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })}>
+                    <option value="">Select Location</option>
+                    <option value="Village A">Village A</option>
+                    <option value="Town B">Town B</option>
+                </select>
                 <div className="flex items-center gap-2">
                     <button className="bg-green-600 text-white rounded px-4 py-2">Add Product</button>
                     {aiPrice && <span className="text-sm text-green-700">AI suggested: LKR {aiPrice}</span>}
